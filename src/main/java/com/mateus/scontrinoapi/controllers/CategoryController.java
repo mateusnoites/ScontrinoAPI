@@ -3,6 +3,7 @@ package com.mateus.scontrinoapi.controllers;
 import com.mateus.scontrinoapi.dto.CategoryDTO;
 import com.mateus.scontrinoapi.dto.CategoryResponseDTO;
 import com.mateus.scontrinoapi.entities.Category.Category;
+import com.mateus.scontrinoapi.infra.components.AuthUtil;
 import com.mateus.scontrinoapi.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,11 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService service;
+    private final AuthUtil authUtil;
 
-    public CategoryController(CategoryService service) {
+    public CategoryController(CategoryService service, AuthUtil authUtil) {
         this.service = service;
+        this.authUtil = authUtil;
     }
 
     @GetMapping("/general")
@@ -30,9 +33,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryResponseDTO>> listAllFromUser() {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+        String email = this.authUtil.getEmail();
 
         List<CategoryResponseDTO> categoryList = this.service.listAllFromUser(email);
 
@@ -41,9 +42,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryResponseDTO> create(@RequestBody CategoryDTO data) {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+        String email = this.authUtil.getEmail();
 
         return new ResponseEntity<CategoryResponseDTO>(this.service.create(data, email), HttpStatus.CREATED);
     }

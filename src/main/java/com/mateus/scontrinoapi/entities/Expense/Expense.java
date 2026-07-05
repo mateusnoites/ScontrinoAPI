@@ -1,5 +1,6 @@
 package com.mateus.scontrinoapi.entities.Expense;
 
+import com.mateus.scontrinoapi.dto.ExpenseDTO;
 import com.mateus.scontrinoapi.entities.Category.Category;
 import com.mateus.scontrinoapi.entities.User.User;
 import jakarta.persistence.*;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,7 +29,6 @@ public class Expense {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    @CreationTimestamp
     private LocalDateTime date;
 
     @ManyToOne
@@ -40,4 +39,13 @@ public class Expense {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Expense(String description, BigDecimal amount, Category category, User user, LocalDateTime date) {
+        this.description = description;
+        this.amount = amount;
+        this.category = category;
+        this.user = user;
+
+        if (date == null) this.date = LocalDateTime.now();
+        else this.date = date;
+    }
 }
