@@ -1,11 +1,15 @@
 package com.mateus.scontrinoapi.controllers;
 
+import com.mateus.scontrinoapi.dto.AdminRegisterDTO;
 import com.mateus.scontrinoapi.dto.LoginResponseDTO;
 import com.mateus.scontrinoapi.dto.LoginDTO;
 import com.mateus.scontrinoapi.dto.RegisterDTO;
 import com.mateus.scontrinoapi.entities.User.User;
+import com.mateus.scontrinoapi.entities.User.UserRole;
+import com.mateus.scontrinoapi.exceptions.BusinessException;
 import com.mateus.scontrinoapi.infra.security.TokenService;
 import com.mateus.scontrinoapi.repositories.UserRepository;
+import com.mateus.scontrinoapi.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +26,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final UserService userService;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, TokenService tokenService) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, TokenService tokenService, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -40,14 +46,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterDTO data) {
-        if (this.userRepository.findByEmail(data.email()) != null)
+    public ResponseEntity<Object> register(@RequestBody RegisterDTO data) {
+        try {
+            userService.create(data);
+        } catch(BusinessException e) {
             return ResponseEntity.badRequest().build();
+        }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.name(), data.email(), encryptedPassword, data.role());
+        return ResponseEntity.ok().build();
+    }
 
-        this.userRepository.save(newUser);
+    @PostMapping("/register/admin")
+    public ResponseEntity<Object> registerAdmin(@RequestBody AdminRegisterDTO data) {
+        try {
+            userService.createAdmin(data);
+        } catch(BusinessException e) {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.ok().build();
     }

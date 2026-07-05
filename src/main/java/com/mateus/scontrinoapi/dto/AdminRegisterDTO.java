@@ -2,9 +2,10 @@ package com.mateus.scontrinoapi.dto;
 
 import com.mateus.scontrinoapi.entities.User.UserRole;
 
-public record RegisterDTO(
+public record AdminRegisterDTO(
         String name,
         String email,
-        String password
+        String password,
+        UserRole role
 ) {
 }

@@ -2,12 +2,10 @@ package com.mateus.scontrinoapi.controllers;
 
 import com.mateus.scontrinoapi.dto.CategoryDTO;
 import com.mateus.scontrinoapi.dto.CategoryResponseDTO;
-import com.mateus.scontrinoapi.entities.Category.Category;
 import com.mateus.scontrinoapi.infra.components.AuthUtil;
 import com.mateus.scontrinoapi.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +43,22 @@ public class CategoryController {
         String email = this.authUtil.getEmail();
 
         return new ResponseEntity<CategoryResponseDTO>(this.service.create(data, email), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        this.service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody CategoryDTO data) {
+        String email = this.authUtil.getEmail();
+
+        return new ResponseEntity<CategoryResponseDTO>(
+                this.service.update(id, data, email),
+                HttpStatus.ACCEPTED
+        );
     }
 
 }

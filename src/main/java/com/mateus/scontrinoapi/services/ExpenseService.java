@@ -5,7 +5,6 @@ import com.mateus.scontrinoapi.dto.ExpenseResponseDTO;
 import com.mateus.scontrinoapi.entities.Category.Category;
 import com.mateus.scontrinoapi.entities.Expense.Expense;
 import com.mateus.scontrinoapi.entities.User.User;
-import com.mateus.scontrinoapi.exceptions.BusinessException;
 import com.mateus.scontrinoapi.repositories.CategoryRepository;
 import com.mateus.scontrinoapi.repositories.ExpenseRepository;
 import com.mateus.scontrinoapi.repositories.UserRepository;
@@ -51,6 +50,24 @@ public class ExpenseService {
                 user,
                 data.date()
         )));
+    }
+
+    public void delete(Long id) {
+        Expense expense = repository.findById(id)
+                .orElseThrow();
+
+        this.repository.delete(expense);
+    }
+
+    public ExpenseResponseDTO update(Long id, ExpenseDTO data, String email) {
+        User user = userRepository.findByEmail(email);
+
+        Category category = categoryRepository.findById(data.categoryId())
+                .orElseThrow();
+
+        Expense expense = new Expense(id, data.description(), data.amount(), data.date(), category, user);
+
+        return new ExpenseResponseDTO(this.repository.save(expense));
     }
 
 }

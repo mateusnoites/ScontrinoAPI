@@ -44,4 +44,22 @@ public class ExpenseController {
         );
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        this.service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponseDTO> update(@PathVariable Long id, @RequestBody ExpenseDTO data) {
+        String email = this.authUtil.getEmail();
+
+        return new ResponseEntity<ExpenseResponseDTO>(
+                this.service.update(id, data, email),
+                HttpStatus.ACCEPTED
+        );
+    }
+
+
+
 }
