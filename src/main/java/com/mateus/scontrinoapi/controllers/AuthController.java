@@ -5,15 +5,14 @@ import com.mateus.scontrinoapi.dto.LoginResponseDTO;
 import com.mateus.scontrinoapi.dto.LoginDTO;
 import com.mateus.scontrinoapi.dto.RegisterDTO;
 import com.mateus.scontrinoapi.entities.User.User;
-import com.mateus.scontrinoapi.entities.User.UserRole;
 import com.mateus.scontrinoapi.exceptions.BusinessException;
 import com.mateus.scontrinoapi.infra.security.TokenService;
 import com.mateus.scontrinoapi.repositories.UserRepository;
 import com.mateus.scontrinoapi.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
