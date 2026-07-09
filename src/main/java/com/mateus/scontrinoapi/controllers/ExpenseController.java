@@ -33,10 +33,16 @@ public class ExpenseController {
 
     @Operation(summary = "Lista todos os gastos do usuário")
     @GetMapping
-    public ResponseEntity<List<ExpenseResponseDTO>> listAllFromUser() {
+    public ResponseEntity<List<ExpenseResponseDTO>> listAllFromUser(
+            @RequestParam(name = "category", required = false, defaultValue = "") String categoryName
+    ) {
         String email = this.authUtil.getEmail();
+        List<ExpenseResponseDTO> response;
 
-        return ResponseEntity.ok(this.service.listAllFromUser(email));
+        if (!categoryName.isBlank()) response = this.service.listAllFromUser(email, categoryName);
+        else response = this.service.listAllFromUser(email);
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Cria um novo gasto")

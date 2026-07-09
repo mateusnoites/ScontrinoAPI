@@ -10,4 +10,5 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByUserEmail(String userEmail);
     boolean existsByNameAndUserId(String name, Long userId);
+    boolean existsByNameAndUserIsNull(String name);
 }

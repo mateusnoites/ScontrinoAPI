@@ -8,22 +8,17 @@ import com.mateus.scontrinoapi.entities.User.User;
 import com.mateus.scontrinoapi.repositories.CategoryRepository;
 import com.mateus.scontrinoapi.repositories.ExpenseRepository;
 import com.mateus.scontrinoapi.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service @RequiredArgsConstructor
 public class ExpenseService {
 
     private final ExpenseRepository repository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-
-    public ExpenseService(ExpenseRepository repository, UserRepository userRepository, CategoryRepository categoryRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     public List<ExpenseResponseDTO> listAll() {
         List<Expense> expenses = this.repository.findAll();
@@ -33,6 +28,12 @@ public class ExpenseService {
 
     public List<ExpenseResponseDTO> listAllFromUser(String email) {
         List<Expense> expenses = this.repository.findByUserEmail(email);
+
+        return expenses.stream().map(ExpenseResponseDTO::new).toList();
+    }
+
+    public List<ExpenseResponseDTO> listAllFromUser(String email, String categoryName) {
+        List<Expense> expenses = repository.findByCategoryNameAndUserEmail(categoryName, email);
 
         return expenses.stream().map(ExpenseResponseDTO::new).toList();
     }
